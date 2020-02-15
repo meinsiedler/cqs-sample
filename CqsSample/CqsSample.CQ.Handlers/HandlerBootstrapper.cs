@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using CqsSample.CQ.Handlers.CrossCuttingConcerns.CommandHandlers.Authorization;
 using CqsSample.CQ.Handlers.CrossCuttingConcerns.QueryHandlers.Authorization;
 using SimpleInjector;
@@ -49,24 +47,22 @@ namespace CqsSample.CQ.Handlers
              * 
              */
 
-            // Command handler registrations
+            // Command handler registrations for all handlers in this assembly which implement ICommandHandler<>.
             container.Register(typeof(ICommandHandler<>), handlerAssemblies);
 
+            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(AccessesUserCommandHandlerDecorator<>));
             container.RegisterDecorator(typeof(ICommandHandler<>), typeof(PermissionCommandHandlerDecorator<>));
             container.RegisterDecorator(typeof(ICommandHandler<>), typeof(TransactionAwareCommandHandlerDecorator<>));
             container.RegisterDecorator(typeof(ICommandHandler<>), typeof(ValidationCommandHandlerDecorator<>));
-            
-            // This must be the last registered decorator, see https://github.com/softawaregmbh/library-cqs/releases/tag/v2.0.0
-            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(PublicCommandHandlerDecorator<>));
+            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(PublicCommandHandlerDecorator<>)); // This must be the last registered decorator, see https://github.com/softawaregmbh/library-cqs/releases/tag/v2.0.0
 
-            // Query handler registrations
+            // Query handler registrations for all handlers in this assembly which implement IQueryHandler<,>.
             container.Register(typeof(IQueryHandler<,>), handlerAssemblies);
 
+            container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(AccessesUserQueryHandlerDecorator<,>));
             container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(PermissionQueryHandlerDecorator<,>));
             container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(ValidationQueryHandlerDecorator<,>));
-
-            // This must be the last registered decorator, see https://github.com/softawaregmbh/library-cqs/releases/tag/v2.0.0
-            container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(PublicQueryHandlerDecorator<,>));
+            container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(PublicQueryHandlerDecorator<,>)); // This must be the last registered decorator, see https://github.com/softawaregmbh/library-cqs/releases/tag/v2.0.0
         }
     }
 }

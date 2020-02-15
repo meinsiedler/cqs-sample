@@ -36,20 +36,26 @@ namespace CqsSample.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<ExceptionFilter>();
+            });
+
             services.AddControllers();
 
-            // This basic authentication with in-memory username/passwords is just for easy testing via Swagger.
-            // Usually, we would have Cookie or Token authenticationi
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = BasicAuthenticationDefaults.AuthenticationScheme;
             })
             .AddBasicAuthentication(BasicAuthenticationDefaults.AuthenticationScheme, o =>
             {
+                // This basic authentication with in-memory username/passwords is just for easy testing via Swagger.
+                // Usually, we would have Cookie or Token authentication where we can store multiple important claims, like user's ID, name, role, ...
                 o.AuthorizationProvider = new MemoryBasicAuthenticationProvider(new Dictionary<string, string>()
                 {
-                    ["sherlock@holmes.com"] = "sherlock",
-                    ["james@watson.com"] = "james"
+                    ["00000000-0000-0000-0000-000000000001"] = "sherlock",
+                    ["00000000-0000-0000-0000-000000000002"] = "john",
+                    ["00000000-0000-0000-0000-000000000003"] = "james"
                 });
             });
 

@@ -56,10 +56,15 @@ namespace CqsSample.Authorization.Permissions
 
         private async Task<IEnumerable<Guid>> GetPermissionsForCurrentUserAsync()
         {
+            // Usually, we'd access our data store here and receive further user information so that we can decide which permissions the user has.
+            // We use some unique identification for the user, which is stored in the IPrincipal.
+
+            // We could be as complex as we want. For example we could even load the permissions which are assigned to a user from the database.
+            // This would allow dynamic configuration of permissions for users via the UI for example.
+
             var permissions = ParseGuids(this.regularUserPermissions);
 
-            var userRole = await this.GetCurrentUserRoleAsync();
-            if (userRole == UserRole.Admin)
+            if (this.principal.Identity.GetUserRole() == UserRole.Admin)
             {
                 permissions = permissions.Union(ParseGuids(this.adminUserPermissions)).ToList();
             }
@@ -70,26 +75,6 @@ namespace CqsSample.Authorization.Permissions
         private static IList<Guid> ParseGuids(params string[] strGuids)
         {
             return strGuids.Select(s => Guid.Parse(s)).ToList();
-        }
-
-        private async Task<UserRole> GetCurrentUserRoleAsync()
-        {
-            // Usually, we'd access our data store here and receive further user information so that we can decide which permissions the user has.
-            // We use some unique identification for the user, which is stored in the IPrincipal. (The name in that simple demo.)
-
-            // We could be as complex as we want. For example we could even load the permissions which are assigned to a user from the database.
-            // This would allow dynamic configuration of permissions for users via the UI for example.
-
-            // In this case and just for simplicity and for demo purposes, we hard-code the check here.
-            // We say, that Sherlock Holmes is the admin and all other users are regular users.
-
-            var name = this.principal.Identity.Name;
-            if (name == "sherlock@holmes.com")
-            {
-                return UserRole.Admin;
-            }
-
-            return UserRole.Regular;
         }
     }
 }
