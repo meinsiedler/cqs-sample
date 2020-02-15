@@ -15,6 +15,7 @@ namespace CqsSample.CQ.Handlers.QueryHandlers.User
             return new UserDto
             {
                 Id = query.UserId,
+                Email = "sherlock@holmes.com",
                 FirstName = "Sherlock",
                 LastName = "Holmes",
                 Street = "221B Baker Street",

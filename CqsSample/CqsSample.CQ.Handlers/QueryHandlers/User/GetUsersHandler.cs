@@ -16,20 +16,23 @@ namespace CqsSample.CQ.Handlers.QueryHandlers.User
             {
                 new UserListEntryDto
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("00000000-0000-0000-0000-000000000001"), // Just for testing, usually, we would generate the Guid when creating the user with Guid.NewGuid().
+                    Email = "sherlock@holmes.com",
                     FirstName = "Sherlock",
                     LastName = "Holmes"
                 },
                 new UserListEntryDto
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("00000000-0000-0000-0000-000000000002"), // Just for testing, usually, we would generate the Guid when creating the user with Guid.NewGuid().
+                    Email = "john@watson.com",
                     FirstName = "John",
                     LastName = "Watson"
                 },
                 new UserListEntryDto
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("00000000-0000-0000-0000-000000000003"), // Just for testing, usually, we would generate the Guid when creating the user with Guid.NewGuid().
                     FirstName = "James",
+                    Email = "james@moriarty.com",
                     LastName = "Moriarty"
                 }
             };

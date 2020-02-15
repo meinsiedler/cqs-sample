@@ -13,6 +13,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SimpleInjector;
+using softaware.Authentication.Basic;
+using softaware.Authentication.Basic.AspNetCore;
+using softaware.Authentication.Basic.AspNetCore.AuthorizationProvider;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace CqsSample.Web.Api
 {
@@ -32,9 +36,34 @@ namespace CqsSample.Web.Api
         {
             services.AddControllers();
 
+            // This basic authentication with in-memory username/passwords is just for easy testing via Swagger.
+            // Usually, we would have Cookie or Token authenticationi
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = BasicAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddBasicAuthentication(BasicAuthenticationDefaults.AuthenticationScheme, o =>
+            {
+                o.AuthorizationProvider = new MemoryBasicAuthenticationProvider(new Dictionary<string, string>()
+                {
+                    ["sherlock@holmes.com"] = "sherlock",
+                    ["james@watson.com"] = "james"
+                });
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CQS Sample", Version = "v1" });
+
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Scheme = "basic"
+                });
+
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
             });
 
             services.AddSimpleInjector(this.container, options =>
@@ -67,6 +96,7 @@ namespace CqsSample.Web.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -81,6 +111,21 @@ namespace CqsSample.Web.Api
 
             // PermissionsBootstrapper.Bootstrap(this.container);
             HandlerBootstrapper.Bootstrap(this.container);
+        }
+
+        public class MemoryBasicAuthenticationProvider : IBasicAuthorizationProvider
+        {
+            private readonly IReadOnlyDictionary<string, string> credentials;
+
+            public MemoryBasicAuthenticationProvider(IReadOnlyDictionary<string, string> credentials)
+            {
+                this.credentials = credentials.ToDictionary(c => c.Key, c => c.Value);
+            }
+
+            public Task<bool> IsAuthorizedAsync(string username, string password)
+            {
+                return Task.FromResult(this.credentials.TryGetValue(username, out var secureString) && password == secureString);
+            }
         }
     }
 }

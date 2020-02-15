@@ -8,6 +8,11 @@ namespace CqsSample.Domain
         public Guid Id { get; set; }
 
         [Required]
+        [EmailAddress]
+        [MaxLength(200)]
+        public string Email { get; set; }
+
+        [Required]
         [MaxLength(200)]
         public string FirstName { get; set; }
 

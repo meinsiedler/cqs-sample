@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using CqsSample.CQ.Contract.Commands.User;
 using CqsSample.CQ.Contract.Queries.User;
 using CqsSample.CQ.Contract.Queries.User.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using softaware.Cqs;
 
 namespace CqsSample.Web.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase

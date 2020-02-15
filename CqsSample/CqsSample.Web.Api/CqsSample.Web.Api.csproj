@@ -6,8 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.9.0" />
+    <PackageReference Include="softaware.Authentication.Basic.AspNetCore" Version="3.1.0" />
     <PackageReference Include="softaware.CQS" Version="2.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
