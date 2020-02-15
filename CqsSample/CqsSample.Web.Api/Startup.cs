@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using CqsSample.Authorization;
 using CqsSample.CQ.Handlers;
+using CqsSample.Web.Api.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SimpleInjector;
 using softaware.Authentication.Basic;
@@ -107,25 +109,10 @@ namespace CqsSample.Web.Api
 
         private void InitializeContainer()
         {
-            // this.container.RegisterSingleton<IPrincipal, HttpContextPrincipal>();
+            this.container.RegisterSingleton<IPrincipal, HttpContextPrincipal>();
 
-            // PermissionsBootstrapper.Bootstrap(this.container);
+            AuthorizationBootstrapper.Bootstrap(this.container);
             HandlerBootstrapper.Bootstrap(this.container);
-        }
-
-        public class MemoryBasicAuthenticationProvider : IBasicAuthorizationProvider
-        {
-            private readonly IReadOnlyDictionary<string, string> credentials;
-
-            public MemoryBasicAuthenticationProvider(IReadOnlyDictionary<string, string> credentials)
-            {
-                this.credentials = credentials.ToDictionary(c => c.Key, c => c.Value);
-            }
-
-            public Task<bool> IsAuthorizedAsync(string username, string password)
-            {
-                return Task.FromResult(this.credentials.TryGetValue(username, out var secureString) && password == secureString);
-            }
         }
     }
 }

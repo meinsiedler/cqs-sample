@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CqsSample.Authorization\CqsSample.Authorization.csproj" />
     <ProjectReference Include="..\CqsSample.CQ.Contract\CqsSample.CQ.Contract.csproj" />
   </ItemGroup>
 

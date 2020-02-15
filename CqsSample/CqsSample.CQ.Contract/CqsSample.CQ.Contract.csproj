@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CqsSample.Authorization\CqsSample.Authorization.csproj" />
     <ProjectReference Include="..\CqsSample.Domain\CqsSample.Domain.csproj" />
   </ItemGroup>
 

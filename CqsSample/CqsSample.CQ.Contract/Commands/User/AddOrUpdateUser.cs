@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using CqsSample.Authorization.Permissions;
 using CqsSample.Domain;
 using softaware.Cqs;
 
 namespace CqsSample.CQ.Contract.Commands.User
 {
+    [Permission(Permissions.User.AddOrUpdate)]
     public class AddOrUpdateUser : ICommand
     {
         public Guid? Id { get; set; }

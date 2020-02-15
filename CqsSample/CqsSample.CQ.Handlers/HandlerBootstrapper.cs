@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using CqsSample.CQ.Handlers.CrossCuttingConcerns.CommandHandlers.Authorization;
+using CqsSample.CQ.Handlers.CrossCuttingConcerns.QueryHandlers.Authorization;
 using SimpleInjector;
 using softaware.Cqs;
 using softaware.Cqs.Decorators.Transaction;
@@ -50,6 +52,7 @@ namespace CqsSample.CQ.Handlers
             // Command handler registrations
             container.Register(typeof(ICommandHandler<>), handlerAssemblies);
 
+            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(PermissionCommandHandlerDecorator<>));
             container.RegisterDecorator(typeof(ICommandHandler<>), typeof(TransactionAwareCommandHandlerDecorator<>));
             container.RegisterDecorator(typeof(ICommandHandler<>), typeof(ValidationCommandHandlerDecorator<>));
             
@@ -59,6 +62,7 @@ namespace CqsSample.CQ.Handlers
             // Query handler registrations
             container.Register(typeof(IQueryHandler<,>), handlerAssemblies);
 
+            container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(PermissionQueryHandlerDecorator<,>));
             container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(ValidationQueryHandlerDecorator<,>));
 
             // This must be the last registered decorator, see https://github.com/softawaregmbh/library-cqs/releases/tag/v2.0.0
